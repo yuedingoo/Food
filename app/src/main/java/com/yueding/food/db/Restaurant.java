@@ -10,7 +10,6 @@ public class Restaurant extends DataSupport {
     private int id;
     private String name;
     private String remarks;
-    private int code;
 
     public int getId() {
         return id;
@@ -36,11 +35,4 @@ public class Restaurant extends DataSupport {
         this.remarks = remarks;
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
 }

@@ -1,4 +1,4 @@
-package com.yueding.food;
+package com.yueding.food.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,11 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.yueding.food.R;
 import com.yueding.food.db.Restaurant;
-
-import org.litepal.crud.DataSupport;
 
 import java.util.List;
 
@@ -19,14 +17,31 @@ import java.util.List;
  * Created by yueding on 2017/11/4.
  */
 
-public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
+public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.ViewHolder> implements View.OnClickListener {
 
     private Context mContext;
     private List<Restaurant> mRestaurantList;
 
-    public MyAdapter() {
-        mRestaurantList = DataSupport.findAll(Restaurant.class);
+    private OnItemClickListener mItemClickListener = null;
+
+    @Override
+    public void onClick(View v) {
+        if (mItemClickListener != null)
+            mItemClickListener.onItemClick(v, (Integer) v.getTag());
     }
+
+    public interface OnItemClickListener{
+        void onItemClick(View view, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.mItemClickListener = listener;
+    }
+
+    public RestaurantAdapter(List<Restaurant> restaurants) {
+        mRestaurantList = restaurants;
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -34,19 +49,22 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
             mContext = parent.getContext();
         }
         View view = LayoutInflater.from(mContext).inflate(R.layout.restaurant_item, parent, false);
-        final ViewHolder holder = new ViewHolder(view);
-        holder.listItem.setOnClickListener(new View.OnClickListener() {
+        view.setOnClickListener(this);
+        /*holder.listItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, holder.textName.getText().toString(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(mContext, FoodActivity.class);
+                intent.putExtra("code", holder.code);
+                mContext.startActivity(intent);
             }
-        });
-        return holder;
+        });*/
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Restaurant restaurant = mRestaurantList.get(position);
+        holder.listItem.setTag(position);
         holder.textName.setText(restaurant.getName());
         holder.textRemarks.setText(restaurant.getRemarks());
     }
@@ -63,8 +81,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
         public ViewHolder(View itemView) {
             super(itemView);
             listItem = (LinearLayout) itemView;
-            textName = (TextView) itemView.findViewById(R.id.textName);
-            textRemarks = (TextView) itemView.findViewById(R.id.textRemarks);
+            textName = itemView.findViewById(R.id.textName);
+            textRemarks = itemView.findViewById(R.id.textRemarks);
         }
     }
 }

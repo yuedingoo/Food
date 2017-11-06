@@ -6,4 +6,65 @@
     android:layout_height="match_parent"
     tools:context="com.yueding.food.FoodActivity">
 
+    <TextView
+        android:id="@+id/textFoodName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="44dp"
+        android:text="TextView"
+        android:textColor="#000"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textFoodRemarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="@+id/textFoodName"
+        app:layout_constraintTop_toBottomOf="@+id/textFoodName" />
+
+    <Button
+        android:id="@+id/bt_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="delete"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_edit"
+        app:layout_constraintStart_toEndOf="@+id/bt_edit"
+        android:layout_marginLeft="8dp" />
+
+    <Button
+        android:id="@+id/bt_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="edit"
+        app:layout_constraintStart_toStartOf="@+id/textFoodRemarks"
+        app:layout_constraintTop_toBottomOf="@+id/textFoodRemarks" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerFood"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/bt_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="ADD"
+        app:layout_constraintBottom_toBottomOf="@+id/bt_edit"
+        app:layout_constraintEnd_toStartOf="@+id/bt_edit"
+        android:layout_marginRight="8dp" />
+
 </android.support.constraint.ConstraintLayout>

@@ -19,7 +19,7 @@
         </activity>
         <activity android:name=".FavoritesActivity" />
         <activity android:name=".AddActivity" />
-        <activity android:name=".FoodActivity"></activity>
+        <activity android:name=".FoodActivity" />
     </application>
 
 </manifest>

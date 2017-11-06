@@ -22,9 +22,9 @@ public class AddActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         LitePal.getDatabase();
-        buttonAdd = (Button) findViewById(R.id.bt_ok);
-        editName = (EditText) findViewById(R.id.editName);
-        editRemarks = (EditText) findViewById(R.id.editRemakes);
+        buttonAdd = findViewById(R.id.bt_ok);
+        editName = findViewById(R.id.editName);
+        editRemarks = findViewById(R.id.editRemakes);
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -32,8 +32,6 @@ public class AddActivity extends AppCompatActivity {
                 restaurant.setName(editName.getText().toString());
                 restaurant.setRemarks(editRemarks.getText().toString());
                 restaurant.save();
-                Intent intent = new Intent(AddActivity.this, FavoritesActivity.class);
-                startActivity(intent);
                 finish();
             }
         });
