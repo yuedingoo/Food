@@ -1,7 +1,10 @@
 package com.yueding.food;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,12 +12,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.yueding.food.adapter.FoodAdapter;
 import com.yueding.food.db.Food;
 import com.yueding.food.db.Restaurant;
@@ -25,15 +33,34 @@ import java.util.List;
 
 public class FoodActivity extends AppCompatActivity {
 
+    private static final int UPDATE = 100;
+    private static final String TAG = "yueding";
     private TextView textName;
     private TextView textRemarks;
     private Button buttonEdit;
     private Button buttonDelete;
     private Button buttonAdd;
     private RecyclerView recyclerView;
+    private ImageView imageHome;
     private int idCode;
     private List<Restaurant> theRestaurant;
     private List<Food> foodList;
+    private String id;
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case UPDATE:
+                    foodList.clear();
+                    List<Food> foods = DataSupport.where("code = ?", id).find(Food.class);
+                    foodList.addAll(foods);
+                    adapter.notifyDataSetChanged();
+                    break;
+            }
+        }
+    };
+    private FoodAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +72,17 @@ public class FoodActivity extends AppCompatActivity {
         buttonEdit = findViewById(R.id.bt_edit);
         buttonAdd = findViewById(R.id.bt_add);
         recyclerView = findViewById(R.id.recyclerFood);
+        imageHome = findViewById(R.id.imageHome);
+//        Glide.with(this).load(R.mipmap.testimages).into(imageHome);
+        imageHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i(TAG, "onClick: click");
+            }
+        });
         Intent intent = getIntent();
         idCode = intent.getIntExtra("id", 0);
-        final String id = Integer.toString(idCode);
+        id = Integer.toString(idCode);
         theRestaurant = DataSupport.where("id = ?", id).find(Restaurant.class);
         foodList = DataSupport.where("code = ?", id).find(Food.class);
         String restaurantName = theRestaurant.get(0).getName();
@@ -58,6 +93,7 @@ public class FoodActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DataSupport.deleteAll(Restaurant.class, "id = ?", id);
+                DataSupport.deleteAll(Food.class, "code = ?", id);
                 finish();
             }
         });
@@ -94,26 +130,97 @@ public class FoodActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
+//        添加菜单处理
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Food food = new Food();
-                food.setName("123hehhe");
-                food.setRemarks("gui");
-                food.setPrice(15.63);
-                food.setCode(idCode);
-                food.save();
+                AlertDialog.Builder builder = new AlertDialog.Builder(FoodActivity.this);
+                View view = getLayoutInflater().inflate(R.layout.dialog2_view, null);
+                final EditText editName = view.findViewById(R.id.dialog2NameEdit);
+                final EditText editRemarks = view.findViewById(R.id.dialog2RemarksEdit);
+                final EditText editPrice = view.findViewById(R.id.dialog2Price);
+                builder.setView(view)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Food food = new Food();
+                                food.setName(editName.getText().toString());
+                                food.setRemarks(editRemarks.getText().toString());
+                                food.setPrice(Double.parseDouble(editPrice.getText().toString()));
+                                food.setCode(idCode);
+                                food.save();
+                                handler.sendEmptyMessage(UPDATE);
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).show();
+
             }
         });
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(manager);
-        FoodAdapter adapter = new FoodAdapter(foodList);
+        adapter = new FoodAdapter(foodList);
         recyclerView.setAdapter(adapter);
+//        修改菜单处理
         adapter.setOnItemClickListener(new FoodAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(getApplicationContext(), "clicked" + position, Toast.LENGTH_SHORT).show();
+                Food theFood = foodList.get(position);
+                final int foodId = theFood.getId();
+                AlertDialog.Builder builder = new AlertDialog.Builder(FoodActivity.this);
+                View v = getLayoutInflater().inflate(R.layout.dialog2_view, null);
+                final TextView textTitle = v.findViewById(R.id.dialog2Title);
+                final EditText editName = v.findViewById(R.id.dialog2NameEdit);
+                final EditText editRemarks = v.findViewById(R.id.dialog2RemarksEdit);
+                final EditText editPrice = v.findViewById(R.id.dialog2Price);
+                textTitle.setText("修改");
+                editName.setText(theFood.getName());
+                editRemarks.setText(theFood.getRemarks());
+                editPrice.setText(String.format("%s", theFood.getPrice()));
+                builder.setView(v)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Food foodUpdate = new Food();
+                                foodUpdate.setName(editName.getText().toString());
+                                foodUpdate.setRemarks(editRemarks.getText().toString());
+                                foodUpdate.setPrice(Double.parseDouble(editPrice.getText().toString()));
+                                foodUpdate.update(foodId);
+                                handler.sendEmptyMessage(UPDATE);
+                            }
+                        })
+                        .setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DataSupport.delete(Food.class, foodId);
+                                handler.sendEmptyMessage(UPDATE);
+                            }
+                        }).show();
             }
         });
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_item, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_search:
+                Intent intent = new Intent(FoodActivity.this, SearchActivity.class);
+                intent.putExtra("activityName", "FoodActivity");
+                intent.putExtra("id", idCode);
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

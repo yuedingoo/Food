@@ -7,13 +7,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.yueding.food.adapter.RestaurantAdapter;
 import com.yueding.food.db.Restaurant;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.File;
 import java.util.List;
 
 public class FavoritesActivity extends AppCompatActivity {
@@ -27,6 +32,14 @@ public class FavoritesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorites);
+
+        final String DATABASE_PATH = "data/data/"+ getPackageName() +"/databases/lovefood.db";
+        File file = new File(DATABASE_PATH);
+        if (!file.exists()) {
+            Intent intent = new Intent(FavoritesActivity.this, MainActivity.class);
+            startActivity(intent);
+        }
+
         restaurantList = DataSupport.findAll(Restaurant.class);
         refreshLayout = findViewById(R.id.refresh);
         fab = findViewById(R.id.fab);
@@ -72,5 +85,25 @@ public class FavoritesActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         refresh();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_item, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_search:
+                Intent intent = new Intent(FavoritesActivity.this, SearchActivity.class);
+                intent.putExtra("activityName", "FavoritesActivity");
+                startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/dialog2Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="添加"
+        android:textSize="20dp"
+        android:layout_margin="5dp"
+        android:textColor="#000"
+        android:layout_gravity="center_horizontal"/>
+    <EditText
+        android:id="@+id/dialog2NameEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="菜名"/>
+    <EditText
+        android:id="@+id/dialog2RemarksEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="备注"/>
+    <EditText
+        android:id="@+id/dialog2Price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="价格"
+        android:inputType="numberDecimal|number"/>
+    <!--数字加小数点android:inputType="numberDecimal|number"-->
+
+
+</LinearLayout>

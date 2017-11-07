@@ -17,13 +17,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final String DATABASE_PATH = "data/data/"+ getPackageName() +"/databases/lovefood.db";
-        File file = new File(DATABASE_PATH);
-        if (file.exists()) {
-            Intent intent = new Intent(MainActivity.this, FavoritesActivity.class);
-            startActivity(intent);
-            finish();
-        }
+
         Button button = findViewById(R.id.bt_add);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
