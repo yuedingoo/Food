@@ -3,6 +3,9 @@ package com.yueding.food;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
@@ -29,6 +32,7 @@ import com.yueding.food.db.Restaurant;
 
 import org.litepal.crud.DataSupport;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public class FoodActivity extends AppCompatActivity {
@@ -40,6 +44,7 @@ public class FoodActivity extends AppCompatActivity {
     private Button buttonEdit;
     private Button buttonDelete;
     private Button buttonAdd;
+    private Button buttonImage;
     private RecyclerView recyclerView;
     private ImageView imageHome;
     private int idCode;
@@ -61,6 +66,7 @@ public class FoodActivity extends AppCompatActivity {
         }
     };
     private FoodAdapter adapter;
+    private String imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,11 +79,27 @@ public class FoodActivity extends AppCompatActivity {
         buttonAdd = findViewById(R.id.bt_add);
         recyclerView = findViewById(R.id.recyclerFood);
         imageHome = findViewById(R.id.imageHome);
-//        Glide.with(this).load(R.mipmap.testimages).into(imageHome);
+        buttonImage = findViewById(R.id.bt_image);
+        buttonImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(FoodActivity.this, PhotoActivity.class);
+                intent.putExtra("id", idCode);
+                startActivity(intent);
+            }
+        });
         imageHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "onClick: click");
+                Intent intent = new Intent(FoodActivity.this, ImageViewActivity.class);
+                theRestaurant = DataSupport.where("id = ?", id).find(Restaurant.class);
+                imageUri = theRestaurant.get(0).getUri();
+                intent.putExtra("path", imageUri);
+                if (null == imageUri) {
+                    Toast.makeText(FoodActivity.this, "未设置照片", Toast.LENGTH_SHORT).show();
+                } else {
+                    startActivity(intent);
+                }
             }
         });
         Intent intent = getIntent();
@@ -87,6 +109,7 @@ public class FoodActivity extends AppCompatActivity {
         foodList = DataSupport.where("code = ?", id).find(Food.class);
         String restaurantName = theRestaurant.get(0).getName();
         String restaurantRemarks = theRestaurant.get(0).getRemarks();
+        loadImage();
         textName.setText(restaurantName);
         textRemarks.setText(restaurantRemarks);
         buttonDelete.setOnClickListener(new View.OnClickListener() {
@@ -203,6 +226,13 @@ public class FoodActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void loadImage() {
+        theRestaurant = DataSupport.where("id = ?", id).find(Restaurant.class);
+        imageUri = theRestaurant.get(0).getUri();
+        Glide.with(this).load(imageUri).into(imageHome);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -222,5 +252,11 @@ public class FoodActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        loadImage();
     }
 }

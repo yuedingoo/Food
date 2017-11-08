@@ -10,14 +10,13 @@
         android:id="@+id/textFoodName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="120dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="52dp"
         android:text="TextView"
         android:textColor="#000"
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginRight="120dp" />
+        app:layout_constraintStart_toEndOf="@+id/imageHome"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textFoodRemarks"
@@ -42,11 +41,10 @@
         android:id="@+id/bt_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="12dp"
         android:text="edit"
         app:layout_constraintBottom_toBottomOf="@+id/bt_add"
-        app:layout_constraintStart_toEndOf="@+id/bt_add"
-        android:layout_marginLeft="8dp" />
+        app:layout_constraintStart_toEndOf="@+id/bt_add" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerFood"
@@ -62,11 +60,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="80dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="92dp"
         android:text="ADD"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textFoodRemarks"
-        android:layout_marginLeft="80dp" />
+        app:layout_constraintTop_toBottomOf="@+id/textFoodRemarks" />
 
     <ImageView
         android:id="@+id/imageHome"
@@ -77,5 +74,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginLeft="28dp" />
+
+    <Button
+        android:id="@+id/bt_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="8dp"
+        android:text="image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageHome"
+        android:layout_marginLeft="56dp" />
 
 </android.support.constraint.ConstraintLayout>
