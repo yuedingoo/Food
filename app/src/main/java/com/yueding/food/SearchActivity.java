@@ -31,7 +31,6 @@ public class SearchActivity extends AppCompatActivity {
 
     private static final String TAG = "yueding";
     private EditText editSearch;
-    private Button buttonSearch;
     private RecyclerView searchRecyclerView;
     private List<Restaurant> restaurantList = null;
     private List<Food> foodList = null;
@@ -50,7 +49,6 @@ public class SearchActivity extends AppCompatActivity {
         Intent intent = getIntent();
         activityName = intent.getStringExtra("activityName");
         editSearch = findViewById(R.id.edit_search);
-        buttonSearch = findViewById(R.id.bt_search);
         searchRecyclerView = findViewById(R.id.searchRecyclerView);
         spinner = findViewById(R.id.spinner);
         /*String[] mItems = getResources().getStringArray(R.array.searchList);
@@ -111,12 +109,6 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                refresh();
-            }
-        });
-        buttonSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
                 refresh();
             }
         });
