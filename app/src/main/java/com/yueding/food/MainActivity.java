@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddActivity.class);
+                intent.putExtra("currentId", 1);
                 startActivity(intent);
                 finish();
             }

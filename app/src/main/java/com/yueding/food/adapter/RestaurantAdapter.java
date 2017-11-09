@@ -5,9 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.yueding.food.R;
 import com.yueding.food.db.Restaurant;
 
@@ -17,21 +20,17 @@ import java.util.List;
  * Created by yueding on 2017/11/4.
  */
 
-public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.ViewHolder> implements View.OnClickListener {
+public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.ViewHolder> {
 
     private Context mContext;
     private List<Restaurant> mRestaurantList;
 
     private OnItemClickListener mItemClickListener = null;
 
-    @Override
-    public void onClick(View v) {
-        if (mItemClickListener != null)
-            mItemClickListener.onItemClick(v, (Integer) v.getTag());
-    }
 
     public interface OnItemClickListener{
         void onItemClick(View view, int position);
+        void onImageClick(View view, int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener){
@@ -49,24 +48,31 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
             mContext = parent.getContext();
         }
         View view = LayoutInflater.from(mContext).inflate(R.layout.restaurant_item, parent, false);
-        view.setOnClickListener(this);
-        /*holder.listItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mContext, FoodActivity.class);
-                intent.putExtra("code", holder.code);
-                mContext.startActivity(intent);
-            }
-        });*/
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         Restaurant restaurant = mRestaurantList.get(position);
-        holder.listItem.setTag(position);
         holder.textName.setText(restaurant.getName());
         holder.textRemarks.setText(restaurant.getRemarks());
+        Glide.with(mContext).load(restaurant.getUri()).into(holder.imageView);
+        holder.listItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mItemClickListener != null) {
+                    mItemClickListener.onItemClick(v, holder.getAdapterPosition());
+                }
+            }
+        });
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mItemClickListener != null) {
+                    mItemClickListener.onImageClick(v, holder.getAdapterPosition());
+                }
+            }
+        });
     }
 
     @Override
@@ -75,14 +81,16 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantAdapter.Vi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout listItem;
+        RelativeLayout listItem;
         TextView textName;
         TextView textRemarks;
+        ImageView imageView;
         public ViewHolder(View itemView) {
             super(itemView);
-            listItem = (LinearLayout) itemView;
+            listItem = itemView.findViewById(R.id.restaurant_content);
             textName = itemView.findViewById(R.id.textName);
             textRemarks = itemView.findViewById(R.id.textRemarks);
+            imageView = itemView.findViewById(R.id.imageShandian);
         }
     }
 }

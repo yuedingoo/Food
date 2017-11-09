@@ -6,14 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yueding.food.R;
 import com.yueding.food.db.Food;
+import com.yueding.food.db.Restaurant;
 
 import java.util.List;
 
@@ -21,26 +19,26 @@ import java.util.List;
  * Created by Administrator on 2017/11/6.
  */
 
-public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
+public class FoodMsgAdapter extends RecyclerView.Adapter<FoodMsgAdapter.ViewHolder> implements View.OnClickListener {
 
     private Context mContext;
     private List<Food> mFoodList;
+    private List<Restaurant> mRestaurantList;
     private OnItemClickListener mItemClickListener = null;
 
-    public FoodAdapter(List<Food> mFoodList) {
+    public FoodMsgAdapter(List<Food> mFoodList, List<Restaurant> mRestaurantList) {
         this.mFoodList = mFoodList;
+        this.mRestaurantList = mRestaurantList;
     }
 
-    /*@Override
+    @Override
     public void onClick(View v) {
         if (mItemClickListener != null)
             mItemClickListener.onItemClick(v, (Integer) v.getTag());
-    }*/
+    }
 
     public interface OnItemClickListener{
         void onItemClick(View view, int position);
-        void onImageClick(View view, int position);
-        void onButtonClick(View view, int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -53,38 +51,25 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
             mContext = parent.getContext();
         }
         View view = LayoutInflater.from(mContext).inflate(R.layout.food_item, parent, false);
-//        view.setOnClickListener(this);
+        view.setOnClickListener(this);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.textMsg.setText("商家: ");
         Food food = mFoodList.get(position);
+        String resName = null;
+        for (Restaurant restaurant : mRestaurantList) {
+            if (restaurant.getId() == food.getCode()) {
+                resName = restaurant.getName();
+                break;
+            }
+        }
         holder.textName.setText(food.getName());
-        holder.textRemarks.setText(food.getRemarks());
+        holder.textRestaurant.setText(resName);
         holder.textPrice.setText(String.format("%s", food.getPrice()));
-//        holder.listItem.setTag(position);
-        holder.listItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mItemClickListener != null)
-                    mItemClickListener.onItemClick(v, holder.getAdapterPosition());
-            }
-        });
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mItemClickListener != null)
-                    mItemClickListener.onImageClick(v, holder.getAdapterPosition());
-            }
-        });
-        holder.buttonRevise.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mItemClickListener != null)
-                    mItemClickListener.onButtonClick(v, holder.getAdapterPosition());
-            }
-        });
+        holder.button.setVisibility(View.GONE);
     }
 
     @Override
@@ -94,21 +79,19 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        RelativeLayout listItem;
         TextView textName;
-        TextView textRemarks;
+        TextView textRestaurant;
         TextView textPrice;
-        ImageView imageView;
-        Button buttonRevise;
+        TextView textMsg;
+        Button button;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            listItem = itemView.findViewById(R.id.list_content);
             textName = itemView.findViewById(R.id.textName);
-            textRemarks = itemView.findViewById(R.id.textRemarks);
+            textRestaurant = itemView.findViewById(R.id.textRemarks);
             textPrice = itemView.findViewById(R.id.textPrice);
-            imageView = itemView.findViewById(R.id.imageMin);
-            buttonRevise = itemView.findViewById(R.id.bt_revise);
+            textMsg = itemView.findViewById(R.id.textMsg);
+            button = itemView.findViewById(R.id.bt_revise);
         }
     }
 }

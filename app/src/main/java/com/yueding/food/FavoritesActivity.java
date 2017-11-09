@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +29,9 @@ public class FavoritesActivity extends AppCompatActivity {
     private RestaurantAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
     private List<Restaurant> restaurantList;
+    private List<Restaurant> restaurantIdList;
+    private int currentId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,12 +45,18 @@ public class FavoritesActivity extends AppCompatActivity {
         }
 
         restaurantList = DataSupport.findAll(Restaurant.class);
+        restaurantIdList = DataSupport.select("id").find(Restaurant.class);
+        for (Restaurant restaurant : restaurantIdList) {
+            currentId = restaurant.getId();
+        }
+        Log.i(TAG, "onCreate: "+currentId);
         refreshLayout = findViewById(R.id.refresh);
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(FavoritesActivity.this, AddActivity.class);
+                intent.putExtra("currentId", currentId+1);
                 startActivity(intent);
             }
         });
@@ -58,10 +68,21 @@ public class FavoritesActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new RestaurantAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                List<Restaurant> restaurants = DataSupport.findAll(Restaurant.class);
                 Intent intent = new Intent(FavoritesActivity.this, FoodActivity.class);
-                intent.putExtra("id", restaurants.get(position).getId());
+                intent.putExtra("id", restaurantList.get(position).getId());
                 startActivity(intent);
+            }
+
+            @Override
+            public void onImageClick(View view, int position) {
+                Intent intent = new Intent(FavoritesActivity.this, ImageViewActivity.class);
+                String imageUri = restaurantList.get(position).getUri();
+                intent.putExtra("path",imageUri);
+                if (null == imageUri) {
+                    Toast.makeText(FavoritesActivity.this, "未设置照片", Toast.LENGTH_SHORT).show();
+                } else {
+                    startActivity(intent);
+                }
             }
         });
         refreshLayout.setColorSchemeResources(R.color.colorPrimary);
@@ -75,6 +96,10 @@ public class FavoritesActivity extends AppCompatActivity {
     }
 
     private void refresh() {
+        restaurantIdList = DataSupport.select("id").find(Restaurant.class);
+        for (Restaurant restaurant : restaurantIdList) {
+            currentId = restaurant.getId();
+        }
         List<Restaurant> userList = DataSupport.findAll(Restaurant.class);
         restaurantList.clear();
         restaurantList.addAll(userList);
@@ -90,7 +115,7 @@ public class FavoritesActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_item, menu);
+        inflater.inflate(R.menu.search_item, menu);
         return true;
     }
 
@@ -99,7 +124,6 @@ public class FavoritesActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.menu_search:
                 Intent intent = new Intent(FavoritesActivity.this, SearchActivity.class);
-                intent.putExtra("activityName", "FavoritesActivity");
                 startActivity(intent);
                 return true;
             default:

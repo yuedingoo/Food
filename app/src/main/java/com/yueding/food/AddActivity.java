@@ -6,16 +6,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.yueding.food.db.Restaurant;
 
 import org.litepal.LitePal;
+import org.litepal.crud.DataSupport;
+
+import java.util.List;
 
 public class AddActivity extends AppCompatActivity {
 
     private EditText editName;
     private EditText editRemarks;
     private Button buttonAdd;
+    private Restaurant restaurant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +34,20 @@ public class AddActivity extends AppCompatActivity {
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Restaurant restaurant = new Restaurant();
+                restaurant = new Restaurant();
                 restaurant.setName(editName.getText().toString());
                 restaurant.setRemarks(editRemarks.getText().toString());
-                restaurant.save();
-                finish();
+                if (!"".equals(restaurant.getName())) {
+                    restaurant.save();
+                    int id = getIntent().getIntExtra("currentId", 0);
+                    Intent intent = new Intent(AddActivity.this, FoodActivity.class);
+                    intent.putExtra("id", id);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(AddActivity.this, "名称不能为空", Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
     }

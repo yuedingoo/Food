@@ -8,12 +8,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.yueding.food.adapter.FoodAdapter;
+import com.yueding.food.adapter.FoodMsgAdapter;
 import com.yueding.food.adapter.RestaurantAdapter;
 import com.yueding.food.db.Food;
 import com.yueding.food.db.Restaurant;
@@ -32,9 +36,12 @@ public class SearchActivity extends AppCompatActivity {
     private List<Restaurant> restaurantList = null;
     private List<Food> foodList = null;
     private RestaurantAdapter restaurantAdapter;
-    private FoodAdapter foodAdapter;
+//    private FoodAdapter foodAdapter;
+    private FoodMsgAdapter foodMsgAdapter;
     private String activityName;
     private int id;
+    private Spinner spinner;
+    private int select;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,18 +52,53 @@ public class SearchActivity extends AppCompatActivity {
         editSearch = findViewById(R.id.edit_search);
         buttonSearch = findViewById(R.id.bt_search);
         searchRecyclerView = findViewById(R.id.searchRecyclerView);
+        spinner = findViewById(R.id.spinner);
+        /*String[] mItems = getResources().getStringArray(R.array.searchList);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, mItems);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);*/
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+//                        商家
+                        restaurantList = DataSupport.findAll(Restaurant.class);
+                        restaurantAdapter = new RestaurantAdapter(restaurantList);
+                        searchRecyclerView.setAdapter(restaurantAdapter);
+                        restaurantAdapter.setOnItemClickListener(new RestaurantAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                Intent intent = new Intent(SearchActivity.this, FoodActivity.class);
+                                intent.putExtra("id", restaurantList.get(position).getId());
+                                startActivity(intent);
+                            }
+
+                            @Override
+                            public void onImageClick(View view, int position) {
+                                onItemClick(view, position);
+                            }
+                        });
+                        select = 0;
+                        break;
+                    case 1:
+//                        菜名
+                        foodList = DataSupport.findAll(Food.class);
+                        foodMsgAdapter = new FoodMsgAdapter(foodList, restaurantList);
+                        searchRecyclerView.setAdapter(foodMsgAdapter);
+                        select = 1;
+                        break;
+                    default:
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
         LinearLayoutManager manager = new LinearLayoutManager(getApplicationContext());
         searchRecyclerView.setLayoutManager(manager);
-        if ("FavoritesActivity".equals(activityName)) {
-            restaurantList = DataSupport.findAll(Restaurant.class);
-            restaurantAdapter = new RestaurantAdapter(restaurantList);
-            searchRecyclerView.setAdapter(restaurantAdapter);
-        } else if ("FoodActivity".equals(activityName)) {
-            id = intent.getIntExtra("id", 0);
-            foodList = DataSupport.where("code = ?", Integer.toString(id)).find(Food.class);
-            foodAdapter = new FoodAdapter(foodList);
-            searchRecyclerView.setAdapter(foodAdapter);
-        }
+
 //        监听输入框文字变化
         editSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -82,31 +124,22 @@ public class SearchActivity extends AppCompatActivity {
 
     private void refresh() {
         String key = editSearch.getText().toString();
+        switch (select) {
+//            商家搜索
+            case 0:
+                List<Restaurant> searchList = DataSupport.where("name like ?", "%"+key+"%").find(Restaurant.class);
+                restaurantList.clear();
+                restaurantList.addAll(searchList);
+                restaurantAdapter.notifyDataSetChanged();
+                break;
 
-        if ("FavoritesActivity".equals(activityName)) {
-            List<Restaurant> searchList = DataSupport.where("name like ?", "%"+key+"%").find(Restaurant.class);
-            restaurantList.clear();
-            restaurantList.addAll(searchList);
-            restaurantAdapter.notifyDataSetChanged();
-        } else if ("FoodActivity".equals(activityName)) {
-            List<Food> searchList = new ArrayList<>();
-//            使用原始SQL语句查询
-            Cursor cursor = DataSupport.findBySQL("select * from Food where name like ? and code = ?", "%" + key + "%", String.valueOf(id));
-            if (cursor.moveToFirst()) {
-                do {
-                    Food food = new Food();
-                    food.setId(cursor.getInt(cursor.getColumnIndex("id")));
-                    food.setCode(cursor.getInt(cursor.getColumnIndex("code")));
-                    food.setName(cursor.getString(cursor.getColumnIndex("name")));
-                    food.setRemarks(cursor.getString(cursor.getColumnIndex("remarks")));
-                    food.setPrice(cursor.getDouble(cursor.getColumnIndex("price")));
-                    searchList.add(food);
-                } while (cursor.moveToNext());
-            }
-            cursor.close();
-            foodList.clear();
-            foodList.addAll(searchList);
-            foodAdapter.notifyDataSetChanged();
+//             菜名搜索
+            case 1:
+                List<Food> searchList1 = DataSupport.where("name like ?", "%"+key+"%").find(Food.class);
+                foodList.clear();
+                foodList.addAll(searchList1);
+                foodMsgAdapter.notifyDataSetChanged();
+                break;
         }
 
     }

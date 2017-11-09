@@ -1,44 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/list_item"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/textName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="美味轩"
-        android:textSize="18sp"
-        android:textColor="#000"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="3dp"
-        android:layout_marginLeft="8dp" />
-    <LinearLayout
+    <ImageView
+        android:id="@+id/imageShandian"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_margin="5dp"/>
+    <RelativeLayout
+        android:id="@+id/restaurant_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/imageShandian"
+        android:layout_toRightOf="@id/imageShandian"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp">
         <TextView
+            android:id="@+id/textName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="备注："
-            android:layout_marginStart="10dp"
-            android:layout_marginLeft="10dp" />
+            android:text="美味轩"
+            android:textSize="18sp"
+            android:textColor="#000"
+            android:layout_marginBottom="3dp" />
+        <TextView
+            android:id="@+id/textBeizhu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/textName"
+            android:text="备注：" />
         <TextView
             android:id="@+id/textRemarks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/textName"
+            android:layout_toEndOf="@id/textBeizhu"
             android:text="好吃"
             android:layout_marginStart="3dp"
-            android:layout_marginLeft="3dp" />
-    </LinearLayout>
+            android:layout_marginLeft="3dp"
+            android:layout_toRightOf="@id/textBeizhu" />
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
+        android:layout_below="@id/imageShandian"
         android:layout_height="1dp"
         android:background="#a0000000"
         android:layout_margin="3dp"/>
 
-</LinearLayout>
+</RelativeLayout>

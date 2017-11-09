@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,8 +42,6 @@ public class FoodActivity extends AppCompatActivity {
     private static final String TAG = "yueding";
     private TextView textName;
     private TextView textRemarks;
-    private Button buttonEdit;
-    private Button buttonDelete;
     private Button buttonAdd;
     private Button buttonImage;
     private RecyclerView recyclerView;
@@ -74,8 +73,6 @@ public class FoodActivity extends AppCompatActivity {
         setContentView(R.layout.activity_food);
         textName = findViewById(R.id.textFoodName);
         textRemarks = findViewById(R.id.textFoodRemarks);
-        buttonDelete = findViewById(R.id.bt_delete);
-        buttonEdit = findViewById(R.id.bt_edit);
         buttonAdd = findViewById(R.id.bt_add);
         recyclerView = findViewById(R.id.recyclerFood);
         imageHome = findViewById(R.id.imageHome);
@@ -112,47 +109,6 @@ public class FoodActivity extends AppCompatActivity {
         loadImage();
         textName.setText(restaurantName);
         textRemarks.setText(restaurantRemarks);
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DataSupport.deleteAll(Restaurant.class, "id = ?", id);
-                DataSupport.deleteAll(Food.class, "code = ?", id);
-                finish();
-            }
-        });
-        buttonEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(FoodActivity.this);
-                LayoutInflater inflater = getLayoutInflater();
-                View view = inflater.inflate(R.layout.dialog_view, null);
-                final EditText dialogName = view.findViewById(R.id.dialogNameEdit);
-                final EditText dialogRemarks = view.findViewById(R.id.dialogRemarksEdit);
-                dialogName.setText(theRestaurant.get(0).getName());
-                dialogRemarks.setText(theRestaurant.get(0).getRemarks());
-                AlertDialog dialog = builder.setView(view)
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        })
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Restaurant restaurantUpdate = new Restaurant();
-                                String updateName = dialogName.getText().toString();
-                                String updateRemarks = dialogRemarks.getText().toString();
-                                restaurantUpdate.setName(updateName);
-                                restaurantUpdate.setRemarks(updateRemarks);
-                                restaurantUpdate.update(idCode);
-                                textName.setText(updateName);
-                                textRemarks.setText(updateRemarks);
-                            }
-                        }).create();
-                dialog.show();
-            }
-        });
 //        添加菜单处理
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,7 +147,17 @@ public class FoodActivity extends AppCompatActivity {
 //        修改菜单处理
         adapter.setOnItemClickListener(new FoodAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int position) {
+            public void onItemClick(View view, final int position) {
+                Toast.makeText(FoodActivity.this, "click item " + position, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onImageClick(View view, int position) {
+                Toast.makeText(FoodActivity.this, "click image " + position, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onButtonClick(View view, int position) {
                 Food theFood = foodList.get(position);
                 final int foodId = theFood.getId();
                 AlertDialog.Builder builder = new AlertDialog.Builder(FoodActivity.this);
@@ -233,10 +199,10 @@ public class FoodActivity extends AppCompatActivity {
         Glide.with(this).load(imageUri).into(imageHome);
     }
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_item, menu);
+        inflater.inflate(R.menu.search_item, menu);
         return true;
     }
 
@@ -248,6 +214,70 @@ public class FoodActivity extends AppCompatActivity {
                 intent.putExtra("activityName", "FoodActivity");
                 intent.putExtra("id", idCode);
                 startActivity(intent);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }*/
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.restaurant_item, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_delete:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("删除")
+                        .setMessage("确认删除本店收藏？")
+                        .setNegativeButton("否", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DataSupport.deleteAll(Restaurant.class, "id = ?", id);
+                                DataSupport.deleteAll(Food.class, "code = ?", id);
+                                finish();
+                            }
+                        }).show();
+                return true;
+            case R.id.menu_item_edit:
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(FoodActivity.this);
+                LayoutInflater inflater = getLayoutInflater();
+                View view = inflater.inflate(R.layout.dialog_view, null);
+                final EditText dialogName = view.findViewById(R.id.dialogNameEdit);
+                final EditText dialogRemarks = view.findViewById(R.id.dialogRemarksEdit);
+                dialogName.setText(theRestaurant.get(0).getName());
+                dialogRemarks.setText(theRestaurant.get(0).getRemarks());
+                AlertDialog dialog = builder1.setView(view)
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Restaurant restaurantUpdate = new Restaurant();
+                                String updateName = dialogName.getText().toString();
+                                String updateRemarks = dialogRemarks.getText().toString();
+                                restaurantUpdate.setName(updateName);
+                                restaurantUpdate.setRemarks(updateRemarks);
+                                restaurantUpdate.update(idCode);
+                                textName.setText(updateName);
+                                textRemarks.setText(updateRemarks);
+                            }
+                        }).create();
+                dialog.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
