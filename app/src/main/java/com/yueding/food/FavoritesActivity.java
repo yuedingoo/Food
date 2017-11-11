@@ -24,7 +24,6 @@ import java.util.List;
 
 public class FavoritesActivity extends AppCompatActivity {
 
-    private static final String TAG = "yueding";
     private FloatingActionButton fab;
     private RestaurantAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
@@ -49,9 +48,9 @@ public class FavoritesActivity extends AppCompatActivity {
         for (Restaurant restaurant : restaurantIdList) {
             currentId = restaurant.getId();
         }
-        Log.i(TAG, "onCreate: "+currentId);
         refreshLayout = findViewById(R.id.refresh);
         fab = findViewById(R.id.fab);
+//        添加后自动跳转到详情页
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

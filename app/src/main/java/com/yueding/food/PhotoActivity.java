@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.yueding.food.db.Food;
 import com.yueding.food.db.Restaurant;
 
 import org.litepal.crud.DataSupport;
@@ -58,6 +59,8 @@ public class PhotoActivity extends AppCompatActivity {
         fab = findViewById(R.id.checkImage);
         Intent intent = getIntent();
         id = intent.getIntExtra("id", 0);
+        final String idType = intent.getStringExtra("idType");
+//        处理选择照片后的事件
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,10 +69,17 @@ public class PhotoActivity extends AppCompatActivity {
                     ActivityCompat.requestPermissions(PhotoActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
                 }
-                Restaurant restaurantUpdate = new Restaurant();
-                restaurantUpdate.setUri(checkImageUri);
-                restaurantUpdate.update(id);
-                finish();
+                if ("restaurant".equals(idType)) {
+                    Restaurant restaurantUpdate = new Restaurant();
+                    restaurantUpdate.setUri(checkImageUri);
+                    restaurantUpdate.update(id);
+                    finish();
+                } else if ("food".equals(idType)) {
+                    Food foodUpdate = new Food();
+                    foodUpdate.setUri(checkImageUri);
+                    foodUpdate.update(id);
+                    finish();
+                }
             }
         });
         takePhoto.setOnClickListener(new View.OnClickListener() {

@@ -13,6 +13,15 @@ public class Food extends DataSupport {
     private double price;
     private int code;
     private String uri;
+    private String label;
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
     public String getUri() {
         return uri;

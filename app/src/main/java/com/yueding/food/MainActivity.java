@@ -11,7 +11,6 @@ import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "yueding";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

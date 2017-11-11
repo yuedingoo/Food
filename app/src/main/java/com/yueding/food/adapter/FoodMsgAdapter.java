@@ -6,9 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.yueding.food.R;
 import com.yueding.food.db.Food;
 import com.yueding.food.db.Restaurant;
@@ -19,7 +22,7 @@ import java.util.List;
  * Created by Administrator on 2017/11/6.
  */
 
-public class FoodMsgAdapter extends RecyclerView.Adapter<FoodMsgAdapter.ViewHolder> implements View.OnClickListener {
+public class FoodMsgAdapter extends RecyclerView.Adapter<FoodMsgAdapter.ViewHolder> {
 
     private Context mContext;
     private List<Food> mFoodList;
@@ -31,11 +34,6 @@ public class FoodMsgAdapter extends RecyclerView.Adapter<FoodMsgAdapter.ViewHold
         this.mRestaurantList = mRestaurantList;
     }
 
-    @Override
-    public void onClick(View v) {
-        if (mItemClickListener != null)
-            mItemClickListener.onItemClick(v, (Integer) v.getTag());
-    }
 
     public interface OnItemClickListener{
         void onItemClick(View view, int position);
@@ -51,13 +49,12 @@ public class FoodMsgAdapter extends RecyclerView.Adapter<FoodMsgAdapter.ViewHold
             mContext = parent.getContext();
         }
         View view = LayoutInflater.from(mContext).inflate(R.layout.food_item, parent, false);
-        view.setOnClickListener(this);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.textMsg.setText("商家: ");
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        holder.textMsg.setText("餐馆: ");
         Food food = mFoodList.get(position);
         String resName = null;
         for (Restaurant restaurant : mRestaurantList) {
@@ -69,7 +66,15 @@ public class FoodMsgAdapter extends RecyclerView.Adapter<FoodMsgAdapter.ViewHold
         holder.textName.setText(food.getName());
         holder.textRestaurant.setText(resName);
         holder.textPrice.setText(String.format("%s", food.getPrice()));
-        holder.button.setVisibility(View.GONE);
+        holder.itemLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mItemClickListener != null) {
+                    mItemClickListener.onItemClick(v, holder.getAdapterPosition());
+                }
+            }
+        });
+        Glide.with(mContext).load(food.getUri()).into(holder.imageView);
     }
 
     @Override
@@ -83,7 +88,8 @@ public class FoodMsgAdapter extends RecyclerView.Adapter<FoodMsgAdapter.ViewHold
         TextView textRestaurant;
         TextView textPrice;
         TextView textMsg;
-        Button button;
+        ImageView imageView;
+        RelativeLayout itemLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -91,7 +97,8 @@ public class FoodMsgAdapter extends RecyclerView.Adapter<FoodMsgAdapter.ViewHold
             textRestaurant = itemView.findViewById(R.id.textRemarks);
             textPrice = itemView.findViewById(R.id.textPrice);
             textMsg = itemView.findViewById(R.id.textMsg);
-            button = itemView.findViewById(R.id.bt_revise);
+            imageView = itemView.findViewById(R.id.imageMin);
+            itemLayout = itemView.findViewById(R.id.list_content);
         }
     }
 }

@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.yueding.food.R;
 import com.yueding.food.db.Food;
 
@@ -31,16 +32,9 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         this.mFoodList = mFoodList;
     }
 
-    /*@Override
-    public void onClick(View v) {
-        if (mItemClickListener != null)
-            mItemClickListener.onItemClick(v, (Integer) v.getTag());
-    }*/
 
     public interface OnItemClickListener{
         void onItemClick(View view, int position);
-        void onImageClick(View view, int position);
-        void onButtonClick(View view, int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
@@ -53,7 +47,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
             mContext = parent.getContext();
         }
         View view = LayoutInflater.from(mContext).inflate(R.layout.food_item, parent, false);
-//        view.setOnClickListener(this);
         return new ViewHolder(view);
     }
 
@@ -63,26 +56,12 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         holder.textName.setText(food.getName());
         holder.textRemarks.setText(food.getRemarks());
         holder.textPrice.setText(String.format("%s", food.getPrice()));
-//        holder.listItem.setTag(position);
+        Glide.with(mContext).load(food.getUri()).into(holder.imageView);
         holder.listItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mItemClickListener != null)
                     mItemClickListener.onItemClick(v, holder.getAdapterPosition());
-            }
-        });
-        holder.imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mItemClickListener != null)
-                    mItemClickListener.onImageClick(v, holder.getAdapterPosition());
-            }
-        });
-        holder.buttonRevise.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mItemClickListener != null)
-                    mItemClickListener.onButtonClick(v, holder.getAdapterPosition());
             }
         });
     }
@@ -99,7 +78,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         TextView textRemarks;
         TextView textPrice;
         ImageView imageView;
-        Button buttonRevise;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -108,7 +86,6 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
             textRemarks = itemView.findViewById(R.id.textRemarks);
             textPrice = itemView.findViewById(R.id.textPrice);
             imageView = itemView.findViewById(R.id.imageMin);
-            buttonRevise = itemView.findViewById(R.id.bt_revise);
         }
     }
 }

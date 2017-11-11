@@ -11,6 +11,15 @@ public class Restaurant extends DataSupport {
     private String name;
     private String remarks;
     private String uri;
+    private String label;
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
     public String getUri() {
         return uri;

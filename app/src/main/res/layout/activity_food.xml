@@ -39,6 +39,17 @@
             android:text="TextView" />
     </RelativeLayout>
 
+    <com.zhy.view.flowlayout.TagFlowLayout
+        android:id="@+id/flowLayout"
+        app:max_select="-1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp"
+        android:layout_toEndOf="@id/food_content"
+        android:layout_toRightOf="@id/food_content">
+    </com.zhy.view.flowlayout.TagFlowLayout>
+
     <TextView
         android:id="@+id/textCaidan"
         android:layout_width="wrap_content"

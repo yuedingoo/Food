@@ -60,7 +60,8 @@ public class SearchActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-//                        商家
+//                        餐馆
+                        editSearch.setText("");
                         restaurantList = DataSupport.findAll(Restaurant.class);
                         restaurantAdapter = new RestaurantAdapter(restaurantList);
                         searchRecyclerView.setAdapter(restaurantAdapter);
@@ -81,8 +82,21 @@ public class SearchActivity extends AppCompatActivity {
                         break;
                     case 1:
 //                        菜名
+                        editSearch.setText("");
                         foodList = DataSupport.findAll(Food.class);
+                        restaurantList = DataSupport.findAll(Restaurant.class);
                         foodMsgAdapter = new FoodMsgAdapter(foodList, restaurantList);
+                        foodMsgAdapter.setOnItemClickListener(new FoodMsgAdapter.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+                                int code = foodList.get(0).getCode();
+                                List<Restaurant> restaurants= DataSupport.findAll(Restaurant.class, code);
+                                Intent intent = new Intent(SearchActivity.this, ContentActivity.class);
+                                intent.putExtra("id", foodList.get(position).getId());
+                                intent.putExtra("restaurant", restaurants.get(0).getName());
+                                startActivity(intent);
+                            }
+                        });
                         searchRecyclerView.setAdapter(foodMsgAdapter);
                         select = 1;
                         break;
@@ -109,7 +123,9 @@ public class SearchActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                refresh();
+                if (!"".equals(editSearch.getText().toString())) {
+                    refresh();
+                }
             }
         });
     }
@@ -117,7 +133,7 @@ public class SearchActivity extends AppCompatActivity {
     private void refresh() {
         String key = editSearch.getText().toString();
         switch (select) {
-//            商家搜索
+//            餐馆搜索
             case 0:
                 List<Restaurant> searchList = DataSupport.where("name like ?", "%"+key+"%").find(Restaurant.class);
                 restaurantList.clear();

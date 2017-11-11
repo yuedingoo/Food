@@ -37,7 +37,9 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <activity android:name=".ImageViewActivity"></activity>
+        <activity android:name=".ImageViewActivity" />
+        <activity android:name=".ContentActivity" />
+        <activity android:name=".AddLabelActivity"></activity>
     </application>
 
 </manifest>

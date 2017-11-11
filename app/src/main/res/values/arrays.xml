@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="searchList">
-        <item>商家</item>
+        <item>餐馆</item>
         <item>菜名</item>
     </string-array>
 </resources>

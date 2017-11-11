@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.yueding.food.ContentActivity">
+
+    <TextView
+        android:id="@+id/contentPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="18元"
+         android:textSize="20sp"
+        android:textColor="#d62a2a"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="20dp"/>
+    <TextView
+        android:id="@+id/contentName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="菜名"
+        android:textSize="20sp"
+        android:layout_centerHorizontal="true"/>
+    <TextView
+        android:id="@+id/contentCanguan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="所在餐馆"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/contentName"
+        android:layout_centerHorizontal="true"/>
+    <TextView
+        android:id="@+id/contentRemarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="备注"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/contentCanguan"/>
+    <Button
+        android:id="@+id/contentButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contentRemarks"
+        android:layout_margin="10dp"
+        android:text="设置图片"/>
+
+    <ImageView
+        android:id="@+id/contentImage"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/contentButton"/>
+
+</RelativeLayout>
