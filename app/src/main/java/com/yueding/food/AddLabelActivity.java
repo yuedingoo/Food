@@ -160,7 +160,7 @@ public class AddLabelActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.ok_menu:
                 String sect = selectLabel.toString();
-                sect = sect.substring(1, sect.length()-1);
+                sect = sect.substring(1, sect.indexOf("+") - 2);
 
                 //把选择好的标签存到数据库
                 Restaurant restaurantUpdate = new Restaurant();

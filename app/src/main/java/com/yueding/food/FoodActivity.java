@@ -32,6 +32,7 @@ import com.zhy.view.flowlayout.TagFlowLayout;
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FoodActivity extends AppCompatActivity {
@@ -43,10 +44,10 @@ public class FoodActivity extends AppCompatActivity {
     private Button buttonImage;
     private RecyclerView recyclerView;
     private ImageView imageHome;
-    private int idCode;
+    private int idCode;    //restaurant id (int)
+    private String id;     //restaurant id (String)
     private List<Restaurant> theRestaurant;
     private List<Food> foodList;
-    private String id;
     private TagFlowLayout mFlowLayout;
     private TagAdapter<String> flowAdapter;
     final List<String> mVals = new ArrayList<>();
@@ -60,6 +61,13 @@ public class FoodActivity extends AppCompatActivity {
                     List<Food> foods = DataSupport.where("code = ?", id).find(Food.class);
                     foodList.addAll(foods);
                     adapter.notifyDataSetChanged();
+                    //标签更新
+                    theRestaurant = DataSupport.where("id = ?", id).find(Restaurant.class);
+                    String labels = theRestaurant.get(0).getLabel();
+                    mVals.clear();
+                    mVals.addAll(Arrays.asList(labels.split(", ")));
+                    mVals.add("+添加标签");
+                    flowAdapter.notifyDataChanged();
                     break;
             }
         }
@@ -78,30 +86,7 @@ public class FoodActivity extends AppCompatActivity {
         imageHome = findViewById(R.id.imageHome);
         buttonImage = findViewById(R.id.bt_image);
         mFlowLayout = findViewById(R.id.flowLayout);
-//        设置标签
-        final LayoutInflater inflater = LayoutInflater.from(this);
-        mVals.add("+添加标签");
-        flowAdapter = new TagAdapter<String>(mVals) {
-            @Override
-            public View getView(FlowLayout parent, int position, String s) {
-                TextView textView = (TextView) inflater.inflate(R.layout.fl_item, mFlowLayout, false);
-                textView.setText(s);
-                return textView;
-            }
-        };
-        mFlowLayout.setAdapter(flowAdapter);
-//        添加标签点击事件
-        mFlowLayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
-            @Override
-            public boolean onTagClick(View view, int position, FlowLayout parent) {
-                if (position == mVals.size() - 1) {
-//                    处理添加标签
-                    Intent intent = new Intent(FoodActivity.this, AddLabelActivity.class);
-                    startActivity(intent);
-                }
-                return true;
-            }
-        });
+
 
 //        设置图片
         buttonImage.setOnClickListener(new View.OnClickListener() {
@@ -134,6 +119,7 @@ public class FoodActivity extends AppCompatActivity {
         foodList = DataSupport.where("code = ?", id).find(Food.class);
         String restaurantName = theRestaurant.get(0).getName();
         String restaurantRemarks = theRestaurant.get(0).getRemarks();
+
         loadImage();
         textName.setText(restaurantName);
         textRemarks.setText(restaurantRemarks);
@@ -183,6 +169,37 @@ public class FoodActivity extends AppCompatActivity {
                 startActivity(intent1);
             }
         });
+
+        //        设置标签
+        final LayoutInflater inflater = LayoutInflater.from(this);
+        String labels = theRestaurant.get(0).getLabel();
+        if (labels != null) {
+            mVals.addAll(Arrays.asList(labels.split(", ")));
+        }
+        mVals.add("+添加标签");
+        flowAdapter = new TagAdapter<String>(mVals) {
+            @Override
+            public View getView(FlowLayout parent, int position, String s) {
+                TextView textView = (TextView) inflater.inflate(R.layout.fl_item, mFlowLayout, false);
+                textView.setText(s);
+                return textView;
+            }
+        };
+        mFlowLayout.setAdapter(flowAdapter);
+//        添加标签点击事件
+        mFlowLayout.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
+            @Override
+            public boolean onTagClick(View view, int position, FlowLayout parent) {
+                if (position == mVals.size() - 1) {
+//                    处理添加标签
+                    Intent intent = new Intent(FoodActivity.this, AddLabelActivity.class);
+                    intent.putExtra("id", idCode);
+                    startActivity(intent);
+                }
+                return true;
+            }
+        });
+
     }
 
     private void loadImage() {
