@@ -2,6 +2,7 @@ package com.yueding.food;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,6 +44,10 @@ public class ContentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_content);
         Intent intent = getIntent();
         restaurant = intent.getStringExtra("restaurant");
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("美食");
+        }
         id = intent.getIntExtra("id", 0);
         list = DataSupport.findAll(Food.class, id);
         food = list.get(0);

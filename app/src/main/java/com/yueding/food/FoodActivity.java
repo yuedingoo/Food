@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.yueding.food.adapter.FoodAdapter;
@@ -92,9 +94,23 @@ public class FoodActivity extends AppCompatActivity {
         mFlowLayout = findViewById(R.id.flowLayout);
         buttonGetPos = findViewById(R.id.bt_pos);
         textPos = findViewById(R.id.textPos);
+        ActionBar actionBar = getSupportActionBar();
 
+        Intent intent = getIntent();
+        idCode = intent.getIntExtra("id", 0);
+        id = Integer.toString(idCode);
+        theRestaurant = DataSupport.where("id = ?", id).find(Restaurant.class);
+        foodList = DataSupport.where("code = ?", id).find(Food.class);
+        String restaurantName = theRestaurant.get(0).getName();
+        String restaurantRemarks = theRestaurant.get(0).getRemarks();
+        if (actionBar != null) {
+            actionBar.setTitle("餐馆");
+        }
+        loadImage();
+        textName.setText(restaurantName);
+        textRemarks.setText("备注:"+restaurantRemarks);
 
-//        设置图片
+        //        设置图片
         buttonImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,17 +134,7 @@ public class FoodActivity extends AppCompatActivity {
                 }
             }
         });
-        Intent intent = getIntent();
-        idCode = intent.getIntExtra("id", 0);
-        id = Integer.toString(idCode);
-        theRestaurant = DataSupport.where("id = ?", id).find(Restaurant.class);
-        foodList = DataSupport.where("code = ?", id).find(Food.class);
-        String restaurantName = theRestaurant.get(0).getName();
-        String restaurantRemarks = theRestaurant.get(0).getRemarks();
 
-        loadImage();
-        textName.setText(restaurantName);
-        textRemarks.setText("备注:"+restaurantRemarks);
 //        添加菜单处理
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
