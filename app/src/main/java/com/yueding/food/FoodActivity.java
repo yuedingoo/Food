@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.yueding.food.adapter.FoodAdapter;
+import com.yueding.food.baiduMap.GetPosActivity;
 import com.yueding.food.db.Food;
 import com.yueding.food.db.Restaurant;
 import com.zhy.view.flowlayout.FlowLayout;
@@ -51,6 +52,11 @@ public class FoodActivity extends AppCompatActivity {
     private TagFlowLayout mFlowLayout;
     private TagAdapter<String> flowAdapter;
     final List<String> mVals = new ArrayList<>();
+    private FoodAdapter adapter;
+    private String imageUri;
+    private Button buttonGetPos;
+    private TextView textPos;
+
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler(){
         @Override
@@ -72,8 +78,6 @@ public class FoodActivity extends AppCompatActivity {
             }
         }
     };
-    private FoodAdapter adapter;
-    private String imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +90,8 @@ public class FoodActivity extends AppCompatActivity {
         imageHome = findViewById(R.id.imageHome);
         buttonImage = findViewById(R.id.bt_image);
         mFlowLayout = findViewById(R.id.flowLayout);
+        buttonGetPos = findViewById(R.id.bt_pos);
+        textPos = findViewById(R.id.textPos);
 
 
 //        设置图片
@@ -122,7 +128,7 @@ public class FoodActivity extends AppCompatActivity {
 
         loadImage();
         textName.setText(restaurantName);
-        textRemarks.setText(restaurantRemarks);
+        textRemarks.setText("备注:"+restaurantRemarks);
 //        添加菜单处理
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,12 +206,27 @@ public class FoodActivity extends AppCompatActivity {
             }
         });
 
+        buttonGetPos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(FoodActivity.this, GetPosActivity.class);
+                intent1.putExtra("id", idCode);
+                startActivity(intent1);
+            }
+        });
+
     }
 
     private void loadImage() {
         theRestaurant = DataSupport.where("id = ?", id).find(Restaurant.class);
         imageUri = theRestaurant.get(0).getUri();
         Glide.with(this).load(imageUri).into(imageHome);
+
+        //方便更新 就添加到该方法中
+        String addr = theRestaurant.get(0).getAddress();
+        if (null != addr) {
+            textPos.setText("地址:"+addr);
+        }
     }
 
 

@@ -27,7 +27,6 @@ public class AddActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
-        LitePal.getDatabase();
         buttonAdd = findViewById(R.id.bt_ok);
         editName = findViewById(R.id.editName);
         editRemarks = findViewById(R.id.editRemakes);

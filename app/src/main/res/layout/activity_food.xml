@@ -9,35 +9,9 @@
 
     <ImageView
         android:id="@+id/imageHome"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_margin="15dp"/>
-
-    <RelativeLayout
-        android:id="@+id/food_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/imageHome"
-        android:layout_toEndOf="@+id/imageHome"
-        android:layout_toRightOf="@+id/imageHome">
-
-        <TextView
-            android:id="@+id/textFoodName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:textColor="#000"
-            android:textSize="24sp" />
-
-        <TextView
-            android:id="@+id/textFoodRemarks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:layout_below="@id/textFoodName"
-            android:layout_marginTop="5dp"
-            android:text="TextView" />
-    </RelativeLayout>
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="5dp"/>
 
     <com.zhy.view.flowlayout.TagFlowLayout
         android:id="@+id/flowLayout"
@@ -46,9 +20,21 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="5dp"
-        android:layout_toEndOf="@id/food_content"
-        android:layout_toRightOf="@id/food_content">
+        android:layout_marginStart="5dp"
+        android:layout_toEndOf="@id/textFoodName"
+        android:layout_toRightOf="@id/textFoodName">
     </com.zhy.view.flowlayout.TagFlowLayout>
+
+
+    <TextView
+        android:id="@+id/textPos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imageHome"
+        android:layout_alignStart="@+id/imageHome"
+        android:layout_below="@id/textFoodRemarks"
+        android:text="地址:" />
+
 
     <TextView
         android:id="@+id/textCaidan"
@@ -57,7 +43,7 @@
         android:text="菜单"
         android:textSize="20sp"
         android:textColor="#000"
-        android:layout_below="@id/imageHome"
+        android:layout_below="@id/bt_image"
         android:layout_margin="10dp"/>
 
     <Button
@@ -73,12 +59,20 @@
         android:id="@+id/bt_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/imageHome"
-        android:layout_toEndOf="@+id/imageHome"
-        android:layout_toRightOf="@+id/imageHome"
+        android:layout_alignLeft="@+id/imageHome"
+        android:layout_alignStart="@+id/imageHome"
+        android:layout_below="@+id/textPos"
         android:text="设置图片"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/imageHome" />
+    <Button
+        android:id="@+id/bt_pos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="定位"
+        android:layout_alignTop="@id/bt_image"
+        android:layout_toEndOf="@id/bt_image"
+        android:layout_toRightOf="@id/bt_image" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerFood"
@@ -86,5 +80,27 @@
         android:layout_height="match_parent"
         android:layout_below="@id/textCaidan"
         android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/textFoodRemarks"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/imageHome"
+        android:layout_alignStart="@+id/imageHome"
+        android:layout_below="@+id/imageHome"
+        android:text="TextView"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/textFoodName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp"
+        android:layout_toEndOf="@+id/imageHome"
+        android:layout_toRightOf="@+id/imageHome"
+        android:text="TextView"
+        android:textColor="#000"
+        android:textSize="20sp" />
 
 </RelativeLayout>

@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.yueding.food.adapter.RestaurantAdapter;
 import com.yueding.food.db.Restaurant;
 
+import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 
 import java.io.File;
@@ -39,8 +40,7 @@ public class FavoritesActivity extends AppCompatActivity {
         final String DATABASE_PATH = "data/data/"+ getPackageName() +"/databases/lovefood.db";
         File file = new File(DATABASE_PATH);
         if (!file.exists()) {
-            Intent intent = new Intent(FavoritesActivity.this, MainActivity.class);
-            startActivity(intent);
+            LitePal.getDatabase();
         }
 
         restaurantList = DataSupport.findAll(Restaurant.class);
