@@ -96,6 +96,7 @@ public class FoodActivity extends AppCompatActivity {
         textPos = findViewById(R.id.textPos);
         ActionBar actionBar = getSupportActionBar();
 
+
         Intent intent = getIntent();
         idCode = intent.getIntExtra("id", 0);
         id = Integer.toString(idCode);
@@ -105,6 +106,7 @@ public class FoodActivity extends AppCompatActivity {
         String restaurantRemarks = theRestaurant.get(0).getRemarks();
         if (actionBar != null) {
             actionBar.setTitle("餐馆");
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
         loadImage();
         textName.setText(restaurantName);
@@ -246,6 +248,9 @@ public class FoodActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
             case R.id.menu_item_delete:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("删除")

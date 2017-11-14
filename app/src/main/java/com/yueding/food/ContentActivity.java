@@ -47,6 +47,7 @@ public class ContentActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setTitle("美食");
+            actionBar.setDisplayHomeAsUpEnabled(true);
         }
         id = intent.getIntExtra("id", 0);
         list = DataSupport.findAll(Food.class, id);
@@ -83,6 +84,9 @@ public class ContentActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
             case R.id.menu_item_delete:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("删除")
